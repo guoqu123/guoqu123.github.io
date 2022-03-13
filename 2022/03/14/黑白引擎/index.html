@@ -1,0 +1,337 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>黑白引擎 [ Soymilk ]</title>
+  
+<link rel="shortcut icon" href="/favicon/favicon.ico">
+
+
+<link rel="stylesheet" href="/lib/highlight/railscasts.css">
+
+
+<link rel="stylesheet" href="/lib/fancybox/jquery.fancybox.min.css">
+
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+
+
+<link rel="stylesheet" href="/css/milk.css">
+
+
+<meta name="generator" content="Hexo 6.0.0"></head>
+<body>
+  <div class="milk-header">
+     
+
+  <nav class="header-nav">
+     
+    <ul class="nav-menu">
+      
+        <li id="Home">
+          <i class="fa fa-home" aria-hidden="true"></i>
+          <a href="/ ">Home</a>
+        </li>
+      
+        <li id="Archives">
+          <i class="fa fa-archive" aria-hidden="true"></i>
+          <a href="/archives ">Archives</a>
+        </li>
+      
+        <li id="About">
+          <i class="fa fa-user-circle" aria-hidden="true"></i>
+          <a href="/about ">About</a>
+        </li>
+      
+    </ul>
+    
+    
+      <span class="nav-date">
+        <i class="fa fa-calendar" aria-hidden="true"></i>
+        <span id="date"></span>
+      </span>
+    
+    
+    
+      <span class="nav-system" id="nav-system"></span>
+    
+    
+    <span class="nav-access">
+      <i class="fa fa-universal-access" id="nav-access"></i>
+      <i class="fa fa-angle-down"></i>
+      <div class="dropdown-content" id="dropdown-content">
+        <ul class="social">
+          
+            <li>
+              <a target="_blank" rel="noopener" href="https://github.com/MRsoymilk">
+                <i class="fa fa-github-alt" aria-hidden="true"></i>
+              </a>
+            </li>
+          
+            <li>
+              <a href="mailto:codermrsoymilk@gmail.com">
+                <i class="fa fa-envelope" aria-hidden="true"></i>
+              </a>
+            </li>
+          
+        </ul>
+        <ul>
+          <li><span>Power by <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a></span></li>
+        </ul>
+      </div>
+    </span>
+  </nav>
+ 
+  </div>
+  <div class="milk-body">
+    
+<div class="draggable-toc">
+  <div class="toc-title">黑白引擎</div>
+  <p>process: <span>0</span></p>
+  <div class="progress-container">
+    <div class="progress-bar" id="bar"></div>
+  </div>
+  <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Google%E8%AF%AD%E6%B3%95%E5%88%A9%E7%94%A8"><span class="toc-text">Google语法利用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#shodan"><span class="toc-text">shodan</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#zoomeye"><span class="toc-text">zoomeye</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#dnspd"><span class="toc-text">dnspd</span></a>
+</div>
+
+<div class="post-content" id="post-content">
+  <div id="top">黑白引擎</div>
+  <div class="post">
+    
+    <div class="content-categories">
+      
+      <i class="fa fa-location-arrow"></i>
+      <ul>
+        <li>categories</li>
+        
+      </ul>
+    
+    </div>
+    <hr>
+    
+    <p>黑白引擎使用GoogleGoogle搜索引擎：    这里之所以要介绍google搜索引擎，是因为它有别于百度、搜狗等内容搜索引擎，其在安全界有着非同一般的地位，甚至专门有一名词为google hacking用来形容google与安全非同寻常的关系；Google基本语法google基本语法:</p>
+<p><strong>Gogle基本语法</strong></p>
+<p>Index of&#x2F;　使用它可以直接进入网站首页下的所有文件和文件夹中；<br>intext:　　将返回所有在网页正文部分包含关键词的网页；   例如“intext：天气”<br>intitle:　　将返回所有网页标题中包含关键词的网页；     例如“intitle：谷歌学术”<br>cache:　　搜索google里关于某些内容的缓存；        例如“cache：<a target="_blank" rel="noopener" href="http://www.baidu.com”/">www.baidu.com”</a><br>define:　　搜索某个词语的定义；             例如：“define：中国”<br>filetype:　搜索指定的文件类型；             例如：.bak，.mdb，.inc等。<br>info:　　查找指定站点的一些基本信息；           例如：“info：<a target="_blank" rel="noopener" href="http://www.baidu.com”/">www.baidu.com”</a><br>inurl:　　搜索我们指定的字符是否存在于URL中；       例如：“inurl：asp”<br>Link:　　link:thief.one可以返回所有和thief.one做了链接的URL；<br>site:　　site:thief.one将返回所有和这个站有关的URL；<br>+　　搜索的结果中要包含后面的内容； PS：在+号前面要有一个空格   例如：“北京 +特产”或“北京 特产”<br>-　　把某个字忽略，例子：新加 -坡；<br>~　　同意词；                     例如：“天津 ~天津”<br>.　　单一的通配符；                  例如：“war .3”和“war 3”，结果数量差别很大<br>　　<em>通配符，可代表多个字母；             例如：“北</em>”<br>“”　　精确查询；                   例如：“”北京””Google语法利用google语法利用:</p>
+<h3 id="Google语法利用"><a href="#Google语法利用" class="headerlink" title="Google语法利用"></a>Google语法利用</h3><p>搜索不同国家网站<br>inurl:tw　　台湾<br>inurl:jp　　日本</p>
+<p>利用google暴库:<br>利用goole可以搜索到互联网上可以直接下载到的数据库文件，语法如下：<br>inurl:editor&#x2F;db&#x2F;<br>inurl:eWebEditor&#x2F;db&#x2F;<br>inurl:bbs&#x2F;data&#x2F;<br>inurl:databackup&#x2F;<br>inurl:blog&#x2F;data&#x2F;<br>inurl:\boke\data<br>inurl:bbs&#x2F;database&#x2F;<br>inurl:conn.asp<br>inc&#x2F;conn.asp<br>Server.mapPath(“.mdb””)<br>allinurl:bbs data<br>filetype:mdb inurl:database<br>filetype:inc conn<br>inurl:data filetype:mdb<br>intitle:”index of” data</p>
+<p>利用goole搜索敏感信息:<br>利用google可以搜索一些网站的敏感信息，语法如下:<br>intitle:”index of” etc<br>intitle:”Index of” .sh_history<br>intitle:”Index of” .bash_history<br>intitle:”index of” passwd<br>intitle:”index of” people.lst<br>intitle:”index of” pwd.db<br>intitle:”index of” etc&#x2F;shadow<br>intitle:”index of” spwd<br>intitle:”index of” master.passwd<br>intitle:”index of” htpasswd<br>inurl:service.pwd</p>
+<p>利用google搜索C段服务器信息:<br>site:218.87.21.*<br>可通过google可获取218.87.21.0&#x2F;24网络的服务信息;</p>
+<p>site:tesla.cn intext:管理|后台|登陆|用户名|密码|验证码|系统|帐号|manage|admin|login|system</p>
+<p>site:tesla.cn inurl:login|admin|manage|manager|admin_login|login_admin|system</p>
+<p>site:tesla.cn intext:”手册”</p>
+<p>site:tesla.cn intext:”忘记密码”</p>
+<p>site:tesla.cn intext:”工号”</p>
+<p>site:tesla.cn intext:”优秀员工”</p>
+<p>site:tesla.cn intext:”身份证号码”</p>
+<p>site:tesla.cn intext:”手机号”</p>
+<p><strong>bing</strong></p>
+<table>
+<thead>
+<tr>
+<th>语法</th>
+<th>简介</th>
+<th>例子</th>
+<th>注意事项</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>contains</td>
+<td>只搜索包含指定文件类型的链接的网站</td>
+<td>音乐 contains：wma搜索只包含.wma文件链接的网站</td>
+<td>本人常用</td>
+</tr>
+<tr>
+<td>filetype</td>
+<td>仅返回以指定文件类型创建的网站</td>
+<td>论文 filetype:pdf查找以PDF格式创建的论文</td>
+<td></td>
+</tr>
+<tr>
+<td>inanchor: 、inbody:、intitle</td>
+<td>指定搜索条件（定位标记、正文或者标题）的网页，为每一个搜索条件指定一个关键字</td>
+<td>inanchor :msn inbody:seo inbody:sem查找定位标记中包含msn、且正文中包含seo和标题为sem的网页</td>
+<td></td>
+</tr>
+<tr>
+<td>ip</td>
+<td>查找特定IP地址的网站</td>
+<td>ip:217.4.249.222搜索IP地址网站</td>
+<td>IP地址必须是以英文句点分开的地址，ip不分大小写</td>
+</tr>
+<tr>
+<td>language</td>
+<td>返回指定语言的网页</td>
+<td>small日本 language:en查看有关small日本的英文网页</td>
+<td>使用搜索生成器中的“语言功能也可以指定网页的语言</td>
+</tr>
+<tr>
+<td>loc或location</td>
+<td>返回特定国家或地区的网页</td>
+<td>small日本(loc:US OR loc:GB)若要查看有关small日本的美国或英国的网页</td>
+<td>在关键字loc后面直接指定国家或地区代码。若要搜 索两种或两种以 上语言，请使用逻辑运算符OR对语 言分组。若要查看可用于Bing的语言代码列表，请参阅国家、地区和语言代码。超级常用</td>
+</tr>
+<tr>
+<td>preper</td>
+<td>着重强调某个搜索条件或运算符，将有关perfer后面的放到最前面</td>
+<td>烤鸭 prefer:北京 查找烤鸭的相关网页，但搜索内容主要限定在查找北京</td>
+<td></td>
+</tr>
+<tr>
+<td>site</td>
+<td>返回属于指定网站的网页</td>
+<td>site:zhihu. com OR douban. com   small日本在知乎和豆瓣中搜small日本</td>
+<td>若要搜索两个或更多域，请使用逻辑运算符OR对域进行分组</td>
+</tr>
+</tbody></table>
+<p><strong>csnsys</strong></p>
+<p> censys地址：<a target="_blank" rel="noopener" href="https://www.censys.io/https://www.censys.io/certificates/help">https://www.censys.io/https://www.censys.io/certificates/help</a> 帮助文档<a target="_blank" rel="noopener" href="https://www.censys.io/ipv4?q=">https://www.censys.io/ipv4?q=</a> ip查询<a target="_blank" rel="noopener" href="https://www.censys.io/domain?q=">https://www.censys.io/domain?q=</a> 域名查询<a target="_blank" rel="noopener" href="https://www.censys.io/certificates?q=">https://www.censys.io/certificates?q=</a> 证书查询搜索语法:</p>
+<p>默认情况下censys支持全文检索;<br>23.0.0.0&#x2F;8 or 8.8.8.0&#x2F;24　　可以使用and or not<br>80.http.get.status_code: 200　　指定状态<br>80.http.get.status_code:[200 TO 300]　　200-300之间的状态码<br>location.country_code: DE　　国家<br>protocols: (“23&#x2F;telnet” or “21&#x2F;ftp”)　　协议<br>80.http.get.headers.server：nginx　　服务器类型版本<br>autonomous_system.description: University　　系统描述正则</p>
+<h2 id="shodan"><a href="#shodan" class="headerlink" title="shodan"></a>shodan</h2><p>shodan地址：<a target="_blank" rel="noopener" href="https://www.shodan.io/shodan%E7%BD%91%E7%BB%9C%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E5%81%8F%E5%90%91%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E4%BB%A5%E5%8F%8A%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E6%90%9C%E7%B4%A2%EF%BC%9B%E6%90%9C%E7%B4%A2%E8%AF%AD%E6%B3%95">https://www.shodan.io/shodan网络搜索引擎偏向网络设备以及服务器的搜索；搜索语法</a>:</p>
+<p>hostname：　　搜索指定的主机或域名，例如 hostname:”google”<br>port：　　搜索指定的端口或服务，例如 port:”21”<br>country：　　搜索指定的国家，例如 country:”CN”<br>city：　　搜索指定的城市，例如 city:”Hefei”<br>org：　　搜索指定的组织或公司，例如 org:”google”<br>isp：　　搜索指定的ISP供应商，例如 isp:”China Telecom”<br>product：　　搜索指定的操作系统&#x2F;软件&#x2F;平台，例如 product:”Apache httpd”<br>version：　　搜索指定的软件版本，例如 version:”1.6.2”<br>geo：　　搜索指定的地理位置，例如 geo:”31.8639, 117.2808”<br>before&#x2F;after：　　搜索指定收录时间前后的数据，格式为dd-mm-yy，例如 before:”11-11-15”<br>net：　　搜索指定的IP地址或子网，例如 net:”210.45.240.0&#x2F;24”zoomeye</p>
+<h2 id="zoomeye"><a href="#zoomeye" class="headerlink" title="zoomeye"></a>zoomeye</h2><p>地址：<a target="_blank" rel="noopener" href="https://www.zoomeye.org/%E9%92%9F%E9%A6%97%E4%B9%8B%E7%9C%BC%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E5%81%8F%E5%90%91web%E5%BA%94%E7%94%A8%E5%B1%82%E9%9D%A2%E7%9A%84%E6%90%9C%E7%B4%A2%EF%BC%9B">https://www.zoomeye.org/钟馗之眼搜索引擎偏向web应用层面的搜索；</a></p>
+<p>搜索语法:</p>
+<p>app:nginx　　组件名<br>ver:1.0　　版本<br>os:windows　　操作系统<br>country:”China”　　国家<br>city:”hangzhou”　　城市<br>port:80　　端口<br>hostname:google　　主机名<br>site:thief.one　　网站域名<br>desc:nmask　　描述<br>keywords:nmask’blog　　关键词<br>service:ftp　　服务类型<br>ip:8.8.8.8　　ip地址<br>cidr:8.8.8.8&#x2F;24　　ip地址段</p>
+<p><strong>FOFA.</strong></p>
+<p>FoFa地址：<a target="_blank" rel="noopener" href="https://fofa.sofofa搜索引擎偏向资产搜索;/">https://fofa.soFoFa搜索引擎偏向资产搜索；</a></p>
+<p>搜索语法:</p>
+<p>title&#x3D;”abc” 从标题中搜索abc。例：标题中有北京的网站。<br>header&#x3D;”abc” 从http头中搜索abc。例：jboss服务器。<br>body&#x3D;”abc” 从html正文中搜索abc。例：正文包含Hacked by。<br>domain&#x3D;”qq.com” 搜索根域名带有qq.com的网站。例： 根域名是qq.com的网站。<br>host&#x3D;”.gov.cn” 从url中搜索.gov.cn,注意搜索要用host作为名称。<br>port&#x3D;”443” 查找对应443端口的资产。例： 查找对应443端口的资产。<br>ip&#x3D;”1.1.1.1” 从ip中搜索包含1.1.1.1的网站,注意搜索要用ip作为名称。<br>protocol&#x3D;”https” 搜索制定协议类型(在开启端口扫描的情况下有效)。例： 查询https协议资产。<br>city&#x3D;”Beijing” 搜索指定城市的资产。例： 搜索指定城市的资产。<br>region&#x3D;”Zhejiang” 搜索指定行政区的资产。例： 搜索指定行政区的资产。<br>country&#x3D;”CN” 搜索指定国家(编码)的资产。例： 搜索指定国家(编码)的资产。<br>cert&#x3D;”google.com” 搜索证书(https或者imaps等)中带有google.com的资产。</p>
+<p>高级搜索：<br>title&#x3D;”powered by” &amp;&amp; title!&#x3D;discuz<br>title!&#x3D;”powered by” &amp;&amp; body&#x3D;discuz<br>( body&#x3D;”content&#x3D;”WordPress” || (header&#x3D;”X-Pingback” &amp;&amp; header&#x3D;”&#x2F;xmlrpc.php” &amp;&amp; body&#x3D;”&#x2F;wp-includes&#x2F;“) ) &amp;&amp; host&#x3D;”gov.cn”</p>
+<h2 id="dnspd"><a href="#dnspd" class="headerlink" title="dnspd"></a>dnspd</h2><p>Dnsdb地址：<a target="_blank" rel="noopener" href="https://www.dnsdb.io/dnsdb%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%98%AF%E4%B8%80%E6%AC%BE%E9%92%88%E5%AF%B9dbs%E8%A7%A3%E6%9E%90%E7%9A%84%E6%9F%A5%E8%AF%A2%E5%B9%B3%E5%8F%B0%EF%BC%9B%E6%90%9C%E7%B4%A2%E8%AF%AD%E6%B3%95">https://www.dnsdb.io/dnsdb搜索引擎是一款针对dbs解析的查询平台；搜索语法</a>:</p>
+<p>DnsDB查询语法结构为条件1 条件2 条件3 …., 每个条件以空格间隔, DnsDB 会把满足所有查询条件的结果返回给用户.</p>
+<p>域名查询条件:<br>域名查询是指查询顶级私有域名所有的DNS记录, 查询语法为domain:.<br>例如查询google.com 的所有DNS记录: domain:google.com.<br>域名查询可以省略domain:.</p>
+<p>主机查询条件:<br>查询语法:host:<br>例如查询主机地址为mp3.example.com的DNS记录: host:map3.example.com<br>主机查询条件与域名查询查询条件的区别在于, 主机查询匹配的是DNS记录的Host值</p>
+<p>按DNS记录类型查询：<br>查询语法: type:.<br>例如只查询A记录: type:a<br>使用条件:必须存在domain:或者host:条件,才可以使用type:查询语法</p>
+<p>按IP限制：<br>查询语法: ip:<br>查询指定IP: ip:8.8.8.8, 该查询与直接输入8.8.8.8进行查询等效<br>查询指定IP范围: ip:8.8.8.8-8.8.255.255<br>CIDR: ip:8.8.0.0&#x2F;24<br>IP最大范围限制65536个</p>
+<p>条件组合查询的例子：<br>查询google.com的所有A记录: google.com type:a</p>
+<p><strong>搜索技巧</strong></p>
+<p>搜索技巧技巧一：选择并提炼合适的搜索关键词<br>测试人员使用搜索引擎多半是查找技术参考的，此时能合理有效地提炼关键词是非常有意义的事情，能够大大提高搜索的效率和搜索结果的质量。</p>
+<p>技巧二：站内搜索：site<br>大多数搜索引擎，除了直接搜索关键字，都还会提供一些高级功能，常用的包括：<br>比如：在搜索框中搜索<br>docker site:<a target="_blank" rel="noopener" href="http://blog.daocloud.io/">http://blog.daocloud.io/</a></p>
+<p>技巧三：准确搜索：””（双引号）<br>最简单、有效的准确搜索方式是学会使用完全匹配法：在关键词上加上 “”（双引号），在这种情况下，搜索引擎只会反馈和关键词完全吻合的搜索结果。<br>比如：在搜索框中搜索<br>“matching query does not exist”</p>
+<p>技巧四：排除关键词： -（减号）<br>如果在进行准确搜索时没有找到自己想要的结果，用户可以对包含特定词汇的信息进行排除，仅需使用减号即可。<br>比如：在搜索框中搜索<br>django -unchained</p>
+<p>技巧五：搜索相关网站：related<br>相关的限定词可用于搜索相关网站时使用。<br>比如，在搜索框中搜索：<br>related:docker.com</p>
+<p>技巧六：直接使用报错信息搜索<br>如果你是在为你的程序无法运行而寻找解决方案，那么直接使用报错提示信息进行搜索是最好的选择。<br>一般来说，代码异常，都会输出异常的类型和位置，而应用软件的错误甚至还会提供对应的错误码，以便于定位和解决问题。用这些信息去搜索，比你用自然语言描述错误现象要精准几百倍。</p>
+<p>技巧七：善用星号：*<br>正如拼图游戏「Scrabble」的空白方块一样，在搜索引擎中，我们可以用星号填补关键词中的缺失部分，不论缺失的是一连串单词的其中一个还是一个单词的某一部分。此外，当你希望搜索一篇确定性偏低的文章时，也可以使用星号填补缺失部分。</p>
+<p>技巧八：学会分辨搜索结果的质量<br>百度对于搜索结果的排名策略一直遭到口诛笔伐，虽然搜索编程相关的资料不至于让你上当受骗，但搜索结果的质量还是有可能影响到你的学习效果。<br>它可能让你下载到的软件不是官方正版，或者是被植入了木马病毒的版本。也可能你轻信了投放推广的培训机构，花冤枉钱去上了一个糟糕的培训课程。更多的情况是，搜索出的结果里，有很多无效的、重复的甚至错误的内容，耽误你的时间，误导你的学习方向。<br>要对搜索结果保持怀疑的态度，不要只迷信排名靠前的结果，它们可能是推广，也可能是做过一些 SEO 的网站。<br>更多的是你作为一个优秀的测试人员，需要学会自己判断搜索结果，总结经验，利用这些搜索技巧更高效地工作和学习。</p>
+
+    
+    <hr>
+    <div class="content-tags">
+      
+      <i class="fa fa-tags"></i>
+      <ul>
+        
+      </ul>
+    
+    </div>
+    
+     
+<div class="comment-tabs" id="comment-tabs">
+  comment:
+  <ul>
+    
+      <li><a href="#Valine">Valine</a></li>
+    
+    
+      <li><a href="#LiveRe">LiveRe</a></li>
+    
+    
+      <li><a href="#ChangYan">ChangYan</a></li>
+    
+  </ul>
+  
+  
+    <div id="ChangYan">
+      <!--PC和WAP自适应版-->
+      <div id="SOHUCS" ></div> 
+      <script type="text/javascript"> 
+      (function(){ 
+      var appid = 'cyuGH4lBk'; 
+      var conf = 'ae32d85e4ca99348209aedfd3ae01478'; 
+      var width = window.innerWidth || document.documentElement.clientWidth; 
+      if (width < 960) {
+      var head = document.getElementsByTagName('head')[0]||document.head||document.documentElement;
+      var script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.charset = 'utf-8';
+      script.id = 'changyan_mobile_js';
+      script.src = 'https://cy-cdn.kuaizhan.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf;
+      head.appendChild(script);
+      } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://cy-cdn.kuaizhan.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); 
+      </script>
+    </div>
+   
+  
+  
+    <div id="LiveRe">
+      
+        <!-- LiveRe City install code -->
+        <div id="lv-container" data-id="city" data-uid="MTAyMC80NjA4MS8yMjU5Mg==">
+          <script type="text/javascript">
+            (function(d, s) {
+              var j, e = d.getElementsByTagName(s)[0];
+              if (typeof LivereTower === 'function') { return; }
+              j = d.createElement(s);
+              j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+              j.async = true;
+              e.parentNode.insertBefore(j, e);
+            })(document, 'script');
+          </script>
+          <noscript>Please activate JavaScript for write a comment in LiveRe</noscript>
+          </div>
+          <!-- completed City install code -->
+        
+    </div>
+  
+  
+  
+    <div id="Valine">
+      <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+      <div id="vcomments"></div>
+      <script>
+        new Valine({
+          el: '#vcomments',
+          appId: '5bHFwYPW2iHWCiV7WmNRSenk-gzGzoHsz',
+          appKey: '2q4UgVDTmeJf9Phe8VbnNKyC',
+          avatar: 'monsterid',
+          enableQQ: true
+        })
+      </script>
+    </div>
+   
+</div>
+
+  </div>
+</div>
+ 
+<div>
+  <button id="scroll2top">back to top</button>
+</div>
+  </div>
+  
+
+<script src="/lib/jquery/jquery.min.js"></script>
+
+
+<script src="/lib/jquery/jquery-ui.min.js"></script>
+
+
+<script src="/lib/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+<script src="/lib/highlight/highlight.pack.js"></script>
+
+<script>
+  hljs.highlightAll();
+</script>
+
+
+<script src="/js/milk.js"></script>
+
+
+</body>
+</html>
