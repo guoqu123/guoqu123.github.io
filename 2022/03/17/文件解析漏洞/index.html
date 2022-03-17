@@ -1,0 +1,344 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>文件解析漏洞 [ Soymilk ]</title>
+  
+<link rel="shortcut icon" href="/favicon/favicon.ico">
+
+
+<link rel="stylesheet" href="/lib/highlight/railscasts.css">
+
+
+<link rel="stylesheet" href="/lib/fancybox/jquery.fancybox.min.css">
+
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+
+
+<link rel="stylesheet" href="/css/milk.css">
+
+
+<meta name="generator" content="Hexo 6.0.0"></head>
+<body>
+  <div class="milk-header">
+     
+
+  <nav class="header-nav">
+     
+    <ul class="nav-menu">
+      
+        <li id="Home">
+          <i class="fa fa-home" aria-hidden="true"></i>
+          <a href="/ ">Home</a>
+        </li>
+      
+        <li id="Archives">
+          <i class="fa fa-archive" aria-hidden="true"></i>
+          <a href="/archives ">Archives</a>
+        </li>
+      
+        <li id="About">
+          <i class="fa fa-user-circle" aria-hidden="true"></i>
+          <a href="/about ">About</a>
+        </li>
+      
+    </ul>
+    
+    
+      <span class="nav-date">
+        <i class="fa fa-calendar" aria-hidden="true"></i>
+        <span id="date"></span>
+      </span>
+    
+    
+    
+      <span class="nav-system" id="nav-system"></span>
+    
+    
+    <span class="nav-access">
+      <i class="fa fa-universal-access" id="nav-access"></i>
+      <i class="fa fa-angle-down"></i>
+      <div class="dropdown-content" id="dropdown-content">
+        <ul class="social">
+          
+            <li>
+              <a target="_blank" rel="noopener" href="https://github.com/MRsoymilk">
+                <i class="fa fa-github-alt" aria-hidden="true"></i>
+              </a>
+            </li>
+          
+            <li>
+              <a href="mailto:codermrsoymilk@gmail.com">
+                <i class="fa fa-envelope" aria-hidden="true"></i>
+              </a>
+            </li>
+          
+        </ul>
+        <ul>
+          <li><span>Power by <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a></span></li>
+        </ul>
+      </div>
+    </span>
+  </nav>
+ 
+  </div>
+  <div class="milk-body">
+    
+<div class="draggable-toc">
+  <div class="toc-title">文件解析漏洞</div>
+  <p>process: <span>0</span></p>
+  <div class="progress-container">
+    <div class="progress-bar" id="bar"></div>
+  </div>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E"><span class="toc-text">文件解析漏洞</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#iis%E6%96%87%E4%BB%B6%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E"><span class="toc-text">iis文件解析漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%9F%BA%E4%BA%8E%E6%96%87%E4%BB%B6%E5%90%8D"><span class="toc-text">1.基于文件名</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%88%E6%9C%AC%EF%BC%9A"><span class="toc-text">版本：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E7%90%86%EF%BC%9A"><span class="toc-text">原理：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%8D%E7%8E%B0%EF%BC%9A"><span class="toc-text">复现：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E6%96%87%E4%BB%B6%E5%A4%B9%E4%B8%8B"><span class="toc-text">基于文件夹下</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%88%E6%9C%AC%EF%BC%9A-1"><span class="toc-text">版本：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E7%90%86%EF%BC%9A-1"><span class="toc-text">原理：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%8D%E7%8E%B0"><span class="toc-text">复现</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#apache%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E"><span class="toc-text">apache解析漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#apache%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%A7%8D%E7%B1%BB%E4%BB%A5%E5%8F%8A%E5%8E%9F%E7%90%86"><span class="toc-text">apache解析漏洞的种类以及原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-php%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E9%94%99%E8%AF%AF"><span class="toc-text">1.php配置文件错误</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E7%90%86"><span class="toc-text">原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#php%E9%85%8D%E7%BD%AE%E9%94%99%E8%AF%AF%E5%A4%8D%E7%8E%B0"><span class="toc-text">php配置错误复现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%8D%E7%8E%B0-1"><span class="toc-text">复现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E5%A4%8D%E5%BB%BA%E8%AE%AE"><span class="toc-text">修复建议</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E4%B8%80"><span class="toc-text">解决方案一</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E4%BA%8C"><span class="toc-text">解决方案二</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-apache-phpstudy"><span class="toc-text">2.apache phpstudy</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E7%90%86%EF%BC%9A-2"><span class="toc-text">原理：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#apache-phpstudy%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0"><span class="toc-text">apache phpstudy漏洞复现</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%AE%E5%A4%8D%E5%BB%BA%E8%AE%AE-1"><span class="toc-text">修复建议</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Apache-HTTPD-%E6%8D%A2%E8%A1%8C%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2017-15715%EF%BC%89"><span class="toc-text">3.Apache HTTPD 换行解析漏洞（CVE-2017-15715）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E6%8F%8F%E8%BF%B0"><span class="toc-text">漏洞描述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E7%90%86-1"><span class="toc-text">原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0"><span class="toc-text">漏洞复现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0-1"><span class="toc-text">漏洞复现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E5%A4%8D%E5%BB%BA%E8%AE%AE-2"><span class="toc-text">修复建议</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#nginx%E8%A7%A3%E6%9E%90%E6%96%87%E4%BB%B6%E6%BC%8F%E6%B4%9E"><span class="toc-text">nginx解析文件漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8B%E7%BB%8D"><span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E-1"><span class="toc-text">文件解析漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E6%8F%8F%E8%BF%B0-1"><span class="toc-text">漏洞描述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90"><span class="toc-text">漏洞原理分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0-2"><span class="toc-text">漏洞复现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90-1"><span class="toc-text">漏洞原理分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E5%A4%8D%E6%96%B9%E6%A1%88"><span class="toc-text">修复方案</span></a></li></ol></li></ol></li></ol>
+</div>
+
+<div class="post-content" id="post-content">
+  <div id="top">文件解析漏洞</div>
+  <div class="post">
+    
+    <div class="content-categories">
+      
+      <i class="fa fa-location-arrow"></i>
+      <ul>
+        <li>categories</li>
+        
+      </ul>
+    
+    </div>
+    <hr>
+    
+    <h1 id="文件解析漏洞"><a href="#文件解析漏洞" class="headerlink" title="文件解析漏洞"></a>文件解析漏洞</h1><p>一般情况上文件上传漏洞+文件包含漏洞&#x2F;文件解析漏洞二者结合使用。</p>
+<p>文件解析漏洞，是指Web容器（Apache、nginx、iis等）在解析文件时出现了漏洞,以其他格式执行出脚本格式的效果，从而，黑客可以利用该漏洞实现非法文件的解析；</p>
+<p>总结一些常见服务器（WEB server）的解析漏洞：</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2336202/1632446840836-93db00c1-b6c4-42d8-ac3b-e385fa90151b.png?x-oss-process=image/resize,w_777,limit_0" alt="image.png"></p>
+<h1 id="iis文件解析漏洞"><a href="#iis文件解析漏洞" class="headerlink" title="iis文件解析漏洞"></a>iis文件解析漏洞</h1><h2 id="1-基于文件名"><a href="#1-基于文件名" class="headerlink" title="1.基于文件名"></a>1.基于文件名</h2><h3 id="版本："><a href="#版本：" class="headerlink" title="版本："></a>版本：</h3><p>iis–&gt;5&#x2F;6–&gt;windows server2003&#x2F;R2</p>
+<h3 id="原理："><a href="#原理：" class="headerlink" title="原理："></a>原理：</h3><p>上传1.asp;.jpg(1.asp大马文件修改名)</p>
+<h3 id="复现："><a href="#复现：" class="headerlink" title="复现："></a>复现：</h3><p>通过文件上传，或者创建文件，格式为*.asp;.jpg  </p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2336202/1632464306619-b2c6ccbe-2ac8-44c3-a1d1-3cd56cb64f0c.png" alt="img"></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2336202/1632464338908-f0848a60-6a51-4e34-a237-fb61de67e22f.png" alt="img"></p>
+<p><img src="C:\Users\十二\AppData\Roaming\Typora\typora-user-images\image-20220314145817162.png" alt="image-20220314145817162"></p>
+<p><img src="C:\Users\十二\AppData\Roaming\Typora\typora-user-images\image-20220314145828488.png" alt="image-20220314145828488"></p>
+<h2 id="基于文件夹下"><a href="#基于文件夹下" class="headerlink" title="基于文件夹下"></a>基于文件夹下</h2><h3 id="版本：-1"><a href="#版本：-1" class="headerlink" title="版本："></a>版本：</h3><p>iis–&gt;7&#x2F;7.5–&gt;windows server 2008&#x2F; R2</p>
+<h3 id="原理：-1"><a href="#原理：-1" class="headerlink" title="原理："></a>原理：</h3><p>创建1.asp文件夹下创建1.jpg（文件夹下的文件）</p>
+<p>iis7中间件的配置错误导致.jpg会以.php运行</p>
+<p>主要由两个点造成：</p>
+<p>1.php.ini–&gt;cgl_flx_pathinfo&#x3D;1（取消注释|设置值为1）</p>
+<p>2.处理程序映射–&gt;phpstudy FastCGL（解除请求限制）</p>
+<h3 id="复现"><a href="#复现" class="headerlink" title="复现"></a>复现</h3><p>创建文件.asp文件夹 上传图片格式后门到此目录；  </p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2336202/1632464900486-008d77ca-447f-4f5c-9ddb-22eeeca33abb.png" alt="img"></p>
+<h1 id="apache解析漏洞"><a href="#apache解析漏洞" class="headerlink" title="apache解析漏洞"></a>apache解析漏洞</h1><p>Apache–(httpd.conf&#x2F;php.ini)</p>
+<p>apache识别是从后往前识别的</p>
+<h2 id="apache解析漏洞的种类以及原理"><a href="#apache解析漏洞的种类以及原理" class="headerlink" title="apache解析漏洞的种类以及原理"></a>apache解析漏洞的种类以及原理</h2><p>Apache 是世界使用排名第一的 Web 服务器软件，它可以运行在几乎所有广泛使用的计算机平台上，由于其跨平台和安全性被广泛使用，是最流行的 Web 服务器端软件之一。  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">bin：存放常用命令工具，如httpd</span><br><span class="line">cgi-bin：存放linux下常用命令，如xxx.sh</span><br><span class="line">error：错误记录</span><br><span class="line">htdocs：网站源码</span><br><span class="line">icons：网站图标</span><br><span class="line">manual：手册</span><br><span class="line">modules：扩展模块</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="1-php配置文件错误"><a href="#1-php配置文件错误" class="headerlink" title="1.php配置文件错误"></a>1.php配置文件错误</h2><h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>php配置错误导致的文件解析错误：在Apache1.x，2.x中，Apache默认一个文件可以有多个以点分割的后缀，解析文件的规则是当最右边的后缀无法识别，则继续向左识别，直到识别到合法后缀才进行解析。</p>
+<p>不论版本 只要配置错误都会导致apahc解析漏洞</p>
+<h3 id="php配置错误复现"><a href="#php配置错误复现" class="headerlink" title="php配置错误复现"></a>php配置错误复现</h3><p>  可以上传一个phpinfo.php.qwea， 当此特性存在的时候，一看.qwea不认识，继续解析，.php我认识，解析成php文件了，访问也是同理，比如访问phpinfo.php.qwea可成功显示 phpinfo ；</p>
+<p>那么哪些后缀Apache不认识？ </p>
+<p>不在mime.types当中的都不认识 （Multipurpose Internet Mail Extensions）  </p>
+<p> 可以到安装Apache的目录下找这个文件 </p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2336202/1632448185088-6f555463-4101-4aa7-9ea9-f5a3acb9e672.png?x-oss-process=image/resize,w_954,limit_0" alt="image.png"></p>
+<ol>
+<li><p>使用module模式与php结合的所有版本apache存在未知扩展名解析漏洞。 </p>
+</li>
+<li><p>使用fastcgi模式与php结合的所有版本apache不存在此漏洞。 </p>
+</li>
+<li><p>利用此漏洞时必须保证扩展名中至少带有一个.php，不然将默认作为txt&#x2F;html文档处理。  </p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2336202/1632448630397-a156d9cf-06bc-4923-b7e5-5c73c5ad7744.png" alt="image.png"></p>
+</li>
+</ol>
+<h3 id="复现-1"><a href="#复现-1" class="headerlink" title="复现"></a>复现</h3><p>在kali中来实现</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo service apache2 restart</span><br><span class="line">cd /etc/apache2/mods-enabled</span><br><span class="line">sudo vi php7.4.conf</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2336202/1632448818870-c3d76faa-4af9-42cf-a3a7-43b690311776.png?x-oss-process=image/resize,w_752,limit_0" alt="image.png"></p>
+<p>正则表达式中，$用来匹配字符串结尾位置。如果设置了RegExp对象的Multiline属性的条件下，还会匹配到字符串结尾的换行符”\n”或”\r”，我们把 $ 换成 .     然后重启apache；</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2336202/1632448950726-d6b54f93-f5d5-464c-aa79-097884260612.png" alt="img"></p>
+<h3 id="修复建议"><a href="#修复建议" class="headerlink" title="修复建议"></a>修复建议</h3><h4 id="解决方案一"><a href="#解决方案一" class="headerlink" title="解决方案一"></a>解决方案一</h4><p>在httpd.conf或httpd-vhosts.conf中加入以下语句，从而禁止文件名格式为.php.的访问权限：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;FilesMatch &quot;.(php.|php3.|php4.|php5.)&quot;&gt;</span><br><span class="line">Order Deny,Allow</span><br><span class="line">Deny from all</span><br><span class="line">&lt;/FilesMatch&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="解决方案二"><a href="#解决方案二" class="headerlink" title="解决方案二"></a>解决方案二</h4><p>如果需要保留文件名，可以修改程序源代码，替换上传文件名中的“.”为“_”： </p>
+<p>$filename &#x3D; str_replace(‘.’, ‘_’, $filename);  </p>
+<h2 id="2-apache-phpstudy"><a href="#2-apache-phpstudy" class="headerlink" title="2.apache phpstudy"></a>2.apache phpstudy</h2><h3 id="原理：-2"><a href="#原理：-2" class="headerlink" title="原理："></a>原理：</h3><p>apache在解析文件时有一个原则：当碰到不认识的扩展名时，将会从后往前解析，直到遇到认识的扩展名为止；</p>
+<p>如果都不认识将会暴露源码；</p>
+<p>在apache配置不当的时候就会造成apache解析漏洞； </p>
+<p>apache  phpstudty中的httpd.conf注释去掉 后缀是php.phhtml都会解析成php文件</p>
+<h3 id="apache-phpstudy漏洞复现"><a href="#apache-phpstudy漏洞复现" class="headerlink" title="apache phpstudy漏洞复现"></a>apache phpstudy漏洞复现</h3><p>在httpd.conf 把注释去掉，后缀是存在.php .phtml都会解析成php文件  </p>
+<p> AddType application&#x2F;x-httpd-php .php .phtml  </p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2336202/1632449568373-491756d8-cd3d-48ad-8183-7f1b62acced1.png" alt="img"></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2336202/1632449627281-fb47010d-da12-44f9-bb94-8fcafeb56429.png?x-oss-process=image/resize,w_1254,limit_0" alt="image.png"></p>
+<h2 id="修复建议-1"><a href="#修复建议-1" class="headerlink" title="修复建议"></a>修复建议</h2><p>1.在httpd.conf或httpd-vhosts.conf中加入以下语句，从而禁止文件名格式为.php.的访问权限：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;FilesMatch &quot;.(php.|php3.|php4.|php5.)&quot;&gt;</span><br><span class="line">Order Deny,Allow</span><br><span class="line">Deny from all</span><br><span class="line">&lt;/FilesMatch&gt;</span><br></pre></td></tr></table></figure>
+
+<p>2.把配置不当的文件进行修改；  </p>
+<h2 id="3-Apache-HTTPD-换行解析漏洞（CVE-2017-15715）"><a href="#3-Apache-HTTPD-换行解析漏洞（CVE-2017-15715）" class="headerlink" title="3.Apache HTTPD 换行解析漏洞（CVE-2017-15715）"></a>3.Apache HTTPD 换行解析漏洞（CVE-2017-15715）</h2><h3 id="漏洞描述"><a href="#漏洞描述" class="headerlink" title="漏洞描述"></a>漏洞描述</h3><p>Apache HTTPD是一款HTTP服务器，它可以通过mod_php来运行PHP网页。其2.4.0~2.4.29版本中存在 一个解析漏洞，在解析PHP时，1.php\x0a将被按照PHP后缀进行解析，导致绕过一些服务器的安全策略。 </p>
+<h3 id="原理-1"><a href="#原理-1" class="headerlink" title="原理"></a>原理</h3><p>通过mod_php来运行php网页，在解析.php\任意文件将会被按照php后缀来进行解析，从而绕过一些服务器的安全策略。</p>
+<h3 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现"></a>漏洞复现</h3><p>靶场：vulhub</p>
+<p><a target="_blank" rel="noopener" href="https://www.wangan.com/docs/285">https://www.wangan.com/docs/285</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">编译及运行漏洞环境：</span><br><span class="line">	docker-compose build</span><br><span class="line">	docker-compose up -d</span><br><span class="line">  </span><br><span class="line">启动后 Apache 运行在 http://your-ip:8080。</span><br></pre></td></tr></table></figure>
+
+<h3 id="漏洞复现-1"><a href="#漏洞复现-1" class="headerlink" title="漏洞复现"></a>漏洞复现</h3><p>可以看到16行这里获取文件名是需要单独post一个name的，因为如果通过 $_FILES[‘file’][‘name’] 获取文件名的话，会把\x0a自动去除，所以 $_FILES[‘file’][‘name’] 这种方式获取文件名就不会造成这个漏洞；  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">	&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;/head&gt;</span><br><span class="line">	&lt;body&gt;</span><br><span class="line">		&lt;form action=&quot;&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&gt;</span><br><span class="line">			&lt;label for=&quot;file&quot;&gt;文件名：&lt;/label&gt;</span><br><span class="line">			&lt;input type=&quot;file&quot; name=&quot;file&quot; id=&quot;file&quot;&gt;&lt;br&gt;</span><br><span class="line">			&lt;input type=&quot;text&quot; name=&quot;name&quot; &lt;br&gt;</span><br><span class="line">			&lt;input type=&quot;submit&quot; name=&quot;submit&quot; value=&quot;提交&quot;&gt;</span><br><span class="line">		&lt;/form&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br><span class="line">	&lt;br /&gt;</span><br><span class="line">&lt;?php</span><br><span class="line">	if(isset($_FILES[&#x27;file&#x27;]))&#123;</span><br><span class="line">	#1.php php</span><br><span class="line">		$name =basename($_POST[&#x27;name&#x27;]);</span><br><span class="line">		$ext = pathinfo($name,PATHINFO_EXTENSION);</span><br><span class="line">		$array=array(&#x27;php&#x27;,&#x27;php3&#x27;,&#x27;php4&#x27;,&#x27;php5&#x27;,&#x27;phtml&#x27;,&#x27;pht&#x27;);</span><br><span class="line">	if(in_array($ext,$array))&#123;</span><br><span class="line">		exit(&#x27;bad file&#x27;);</span><br><span class="line">	&#125;</span><br><span class="line">	move_uploaded_file($_FILES[&#x27;file&#x27;][&#x27;tmp_name&#x27;],&#x27;./&#x27;.$name);</span><br><span class="line">	&#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>后台是通过黑名单方式过滤了php后缀的文件，根据最开始的知识，什么样的文件算是php文件呢？在有定义，这句话的意思是以php结尾的文件都算php文件，在正则中表示匹配输入字符串的结尾位置。 如果设置了 RegExp对象的 Multiline属性，则也匹配 \n 或 \r 恰好，我们在文件末尾加了0x0a（n），所以被匹配成功了；  </p>
+<p>0x0a和0x0d  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">0x0d \r CR这三者代表是回车，是同一个东西，回车的作用只是移动光标至该行的起始位置;</span><br><span class="line"></span><br><span class="line">0x0a \n CL这三者代表换行，是同一个东西，换行至下一行行首起始位置;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>上传文件拦截</p>
+<p>在 phpinfo.php 后面插入一个 \x0A（注意，不能是 \x0D\x0A，只能是一个 \x0A），不再拦截，注意，是右键插入：</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2336202/1632452617158-f6d51dcf-301a-4032-952d-71a5ed35b6a4.png" alt="img"></p>
+<p>访问刚才上传的 &#x2F;evil.php%0a，发现能够成功解析，但这个文件不是 php 后缀，说明目标存在解析漏洞：</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2336202/1632452699297-de7561d1-67db-47b3-a908-3d9138711d6c.png" alt="img"></p>
+<h3 id="修复建议-2"><a href="#修复建议-2" class="headerlink" title="修复建议"></a>修复建议</h3><p>1.升级到最新版本； </p>
+<p>2.或将上传的文件重命名为为时间戳+随机数+.jpg的格式并禁用上传文件目录执行；  </p>
+<h1 id="nginx解析文件漏洞"><a href="#nginx解析文件漏洞" class="headerlink" title="nginx解析文件漏洞"></a>nginx解析文件漏洞</h1><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>Nginx是一款轻量级的Web 服务器&#x2F;反向代理服务器及电子邮件（IMAP&#x2F;POP3）代理服务器，在BSD-like 协议下发行。其特点是占有内存少，并发能力强，事实上nginx的并发能力确实在同类型的网页服务器中表现较好 ； </p>
+<h2 id="文件解析漏洞-1"><a href="#文件解析漏洞-1" class="headerlink" title="文件解析漏洞"></a>文件解析漏洞</h2><h3 id="漏洞描述-1"><a href="#漏洞描述-1" class="headerlink" title="漏洞描述"></a>漏洞描述</h3><p>该漏洞是由于Nginx中php配置不当而造成的，与Nginx版本无关，但在高版本的php中，由于 security.limit_extensions的引入，使得该漏洞难以被成功利用。 </p>
+<p>在已经上传了恶意1.jpg文件后，访问&#x2F;1.jpg&#x2F;xxx.php，（路径修复cgi.fix_pathinfo&#x3D;1后）使得Nginx将其解析为php文件传给php-cgi程序（传给路径位于SERVER[“SCRIPT_FILENAME”]，修复去除路径位于 SERVER[“PATH_INFO”]），但cgi程序将其解析为1.jpg并执行。 </p>
+<ol>
+<li>jpg&#x2F;.php</li>
+</ol>
+<p>与iis7的漏洞类型一样</p>
+<h3 id="漏洞原理分析"><a href="#漏洞原理分析" class="headerlink" title="漏洞原理分析"></a>漏洞原理分析</h3><p>Nginx的处理程序和FastCGI处理程序不同导致Nginx拿到URI为&#x2F;1.jpg&#x2F;xxx.php后，识别处后缀是.php，认为是php文件，转交给PHP FastCGI处理程序去处理。PHP FastCGI处理程序识别该URI： &#x2F;1.jpg&#x2F;xxx.php不存在，按照PHP FastCGI处理程序自己的规则，删去最后的&#x2F;xxx.php，又看&#x2F;1.jpg存在，就将&#x2F;1.jpg当成要执行的文件，就成功解析。 Nginx传送给PHP FastCGI处理程序的路径可以在phpinfo中查看【传送路径查看】 ； </p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2336202/1632469157127-b889167f-393e-4785-ad37-b50844679598.png" alt="img"></p>
+<p> cgi.fix_pathinfo为php中的一个选项，默认开启为1，作用为修理路径，也就是对路径URI的处理规范；  </p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2336202/1632469263403-0b0b1d1e-ed28-4e1c-abb0-a66ffd293c96.png" alt="img"></p>
+<p>当php遇到文件路径为&#x2F;1.jpg&#x2F;xxx.php&#x2F;ss.001时，该文件不存在，会删除最后的&#x2F;ss.001，再判 断&#x2F;1.jpg&#x2F;xxx.php是否存在，若存在则将&#x2F;1.jpg&#x2F;xxx.php当作&#x2F;1.jpg&#x2F;xxx.php&#x2F;ss.001文件，若不存在，则继续删除最后一个路径。删除的多余路径会存在PATH_INFO中，在这里为ss.001  </p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2336202/1632469366802-a5b1ee31-4bbb-44e3-9cea-572f23a22639.png" alt="img"></p>
+<h3 id="漏洞复现-2"><a href="#漏洞复现-2" class="headerlink" title="漏洞复现"></a>漏洞复现</h3><p>使用phpstudy nginx php5.2.7  </p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2336202/1632468736962-c87a1889-989c-4de0-9e5a-619c3c419b82.png" alt="img"></p>
+<h3 id="漏洞原理分析-1"><a href="#漏洞原理分析-1" class="headerlink" title="漏洞原理分析"></a>漏洞原理分析</h3><p>Nginx的处理程序和FastCGI处理程序不同导致Nginx拿到URI为&#x2F;1.jpg&#x2F;xxx.php后，识别处后缀是.php，认为是php文件，转交给PHP FastCGI处理程序去处理。PHP FastCGI处理程序识别该URI： &#x2F;1.jpg&#x2F;xxx.php不存在，按照PHP FastCGI处理程序自己的规则，删去最后的&#x2F;xxx.php，又看&#x2F;1.jpg存在，就将&#x2F;1.jpg当成要执行的文件，就成功解析。 Nginx传送给PHP FastCGI处理程序的路径可以在phpinfo中查看【传送路径查看】 ； </p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2336202/1632469157127-b889167f-393e-4785-ad37-b50844679598.png" alt="img"></p>
+<p> cgi.fix_pathinfo为php中的一个选项，默认开启为1，作用为修理路径，也就是对路径URI的处理规范；  </p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2336202/1632469263403-0b0b1d1e-ed28-4e1c-abb0-a66ffd293c96.png" alt="img"></p>
+<p>当php遇到文件路径为&#x2F;1.jpg&#x2F;xxx.php&#x2F;ss.001时，该文件不存在，会删除最后的&#x2F;ss.001，再判 断&#x2F;1.jpg&#x2F;xxx.php是否存在，若存在则将&#x2F;1.jpg&#x2F;xxx.php当作&#x2F;1.jpg&#x2F;xxx.php&#x2F;ss.001文件，若不存在，则继续删除最后一个路径。删除的多余路径会存在PATH_INFO中，在这里为ss.001  </p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2336202/1632469366802-a5b1ee31-4bbb-44e3-9cea-572f23a22639.png" alt="img"></p>
+<h3 id="修复方案"><a href="#修复方案" class="headerlink" title="修复方案"></a>修复方案</h3><p>1、 将php.ini文件中的cgi.fix_pathinfo的值设置为0,这样php再解析1.php&#x2F;1.jpg这样的目录时,只要1.jpg 不存在就会显示404页面； </p>
+<p>2、 php-fpm.conf中的security.limit_extensions后面的值设置为.php；  </p>
+
+    
+    <hr>
+    <div class="content-tags">
+      
+      <i class="fa fa-tags"></i>
+      <ul>
+        
+      </ul>
+    
+    </div>
+    
+     
+<div class="comment-tabs" id="comment-tabs">
+  comment:
+  <ul>
+    
+      <li><a href="#Valine">Valine</a></li>
+    
+    
+      <li><a href="#LiveRe">LiveRe</a></li>
+    
+    
+      <li><a href="#ChangYan">ChangYan</a></li>
+    
+  </ul>
+  
+  
+    <div id="ChangYan">
+      <!--PC和WAP自适应版-->
+      <div id="SOHUCS" ></div> 
+      <script type="text/javascript"> 
+      (function(){ 
+      var appid = 'cyuGH4lBk'; 
+      var conf = 'ae32d85e4ca99348209aedfd3ae01478'; 
+      var width = window.innerWidth || document.documentElement.clientWidth; 
+      if (width < 960) {
+      var head = document.getElementsByTagName('head')[0]||document.head||document.documentElement;
+      var script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.charset = 'utf-8';
+      script.id = 'changyan_mobile_js';
+      script.src = 'https://cy-cdn.kuaizhan.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf;
+      head.appendChild(script);
+      } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://cy-cdn.kuaizhan.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); 
+      </script>
+    </div>
+   
+  
+  
+    <div id="LiveRe">
+      
+        <!-- LiveRe City install code -->
+        <div id="lv-container" data-id="city" data-uid="MTAyMC80NjA4MS8yMjU5Mg==">
+          <script type="text/javascript">
+            (function(d, s) {
+              var j, e = d.getElementsByTagName(s)[0];
+              if (typeof LivereTower === 'function') { return; }
+              j = d.createElement(s);
+              j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+              j.async = true;
+              e.parentNode.insertBefore(j, e);
+            })(document, 'script');
+          </script>
+          <noscript>Please activate JavaScript for write a comment in LiveRe</noscript>
+          </div>
+          <!-- completed City install code -->
+        
+    </div>
+  
+  
+  
+    <div id="Valine">
+      <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+      <div id="vcomments"></div>
+      <script>
+        new Valine({
+          el: '#vcomments',
+          appId: '5bHFwYPW2iHWCiV7WmNRSenk-gzGzoHsz',
+          appKey: '2q4UgVDTmeJf9Phe8VbnNKyC',
+          avatar: 'monsterid',
+          enableQQ: true
+        })
+      </script>
+    </div>
+   
+</div>
+
+  </div>
+</div>
+ 
+<div>
+  <button id="scroll2top">back to top</button>
+</div>
+  </div>
+  
+
+<script src="/lib/jquery/jquery.min.js"></script>
+
+
+<script src="/lib/jquery/jquery-ui.min.js"></script>
+
+
+<script src="/lib/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+<script src="/lib/highlight/highlight.pack.js"></script>
+
+<script>
+  hljs.highlightAll();
+</script>
+
+
+<script src="/js/milk.js"></script>
+
+
+</body>
+</html>
